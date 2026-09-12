@@ -1,576 +1,960 @@
+```html
 <!DOCTYPE html>
-<html lang="ka">
+<html lang="ka" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S-AI Market | პირველი ინოვაციური უმოლარო სავაჭრო სივრცე საქართველოში</title>
-    <!-- Google Fonts & FontAwesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Fira+GO:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <title>S-AI Market — პირველი უმოლარო Smart მიკრო-მარკეტი საქართველოში</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            cyan: '#00f2fe',
+                            blue: '#4facfe',
+                            purple: '#7928ca',
+                            emerald: '#10b981',
+                            darkBg: '#050811',
+                            cardBg: 'rgba(15, 23, 42, 0.75)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <style>
-        :root {
-            --bg-main: #0B0F19;
-            --bg-card: rgba(23, 31, 52, 0.7);
-            --neon-blue: #00F0FF;
-            --neon-purple: #7000FF;
-            --text-main: #F0F4F8;
-            --text-sub: #94A3B8;
-            --border-glow: rgba(0, 240, 255, 0.2);
-            --gradient: linear-gradient(135deg, #00F0FF 0%, #7000FF 100%);
-        }
+    <!-- Canvas Confetti CDN for Interactive Demo -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Fira GO', sans-serif;
-        }
+    <!-- Custom CSS Animations & Glassmorphism Utilities -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
         body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            line-height: 1.6;
+            font-family: 'Inter', sans-serif;
+            background-color: #050811;
+            color: #f1f5f9;
             overflow-x: hidden;
         }
 
-        /* Ambient Glow Background */
-        .bg-glow {
-            position: fixed;
-            top: -20%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, rgba(0, 240, 255, 0.15) 0%, rgba(112, 0, 255, 0.05) 50%, rgba(0,0,0,0) 70%);
-            z-index: -1;
-            pointer-events: none;
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 8%;
+        .glass-card {
+            background: rgba(22, 30, 49, 0.5);
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-glow);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: rgba(11, 15, 25, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .logo {
-            font-size: 1.6rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-            background: var(--gradient);
+        .glass-card:hover {
+            border-color: rgba(0, 242, 254, 0.35);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 32px -10px rgba(0, 242, 254, 0.15);
+        }
+
+        .text-gradient-cyan {
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
+        .text-gradient-emerald {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        nav a {
-            color: var(--text-sub);
-            text-decoration: none;
-            transition: color 0.3s;
-            font-weight: 500;
-            font-size: 0.95rem;
+        .bg-gradient-brand {
+            background: linear-gradient(135deg, #00f2fe 0%, #7928ca 100%);
         }
 
-        nav a:hover {
-            color: var(--neon-blue);
+        .glow-cyan {
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
         }
 
-        .cta-btn {
-            background: var(--gradient);
-            color: #fff;
-            padding: 0.75rem 1.6rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: none;
-            cursor: pointer;
+        /* Pulse Radar Effects */
+        @keyframes radar-scan {
+            0% { transform: translateY(-100%); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(100%); opacity: 0; }
         }
 
-        .cta-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(112, 0, 255, 0.5);
+        .animate-scan-line {
+            animation: radar-scan 3s infinite linear;
         }
 
-        /* Hero Section */
-        .hero {
-            padding: 6rem 8% 4rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-
-        .hero-badge {
-            display: inline-block;
-            background: rgba(0, 240, 255, 0.1);
-            border: 1px solid var(--neon-blue);
-            color: var(--neon-blue);
-            padding: 0.4rem 1.2rem;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
+        ::-webkit-scrollbar-track {
+            background: #050811;
         }
-
-        .hero h1 {
-            font-size: 3.2rem;
-            line-height: 1.2;
-            margin-bottom: 1.2rem;
-            font-weight: 800;
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
         }
-
-        .hero p {
-            color: var(--text-sub);
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            max-width: 520px;
-        }
-
-        .hero-stats {
-            display: flex;
-            gap: 2.5rem;
-            margin-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 1.5rem;
-        }
-
-        .stat-item h3 {
-            font-size: 2rem;
-            color: var(--neon-blue);
-            font-weight: 700;
-        }
-
-        .stat-item p {
-            font-size: 0.85rem;
-            color: var(--text-sub);
-            margin: 0;
-        }
-
-        /* Visual Simulator Card */
-        .simulator-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glow);
-            border-radius: 24px;
-            padding: 2rem;
-            backdrop-filter: blur(16px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            position: relative;
-        }
-
-        .sim-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .qr-demo {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 1.5rem;
-            border-radius: 16px;
-            border: 1px dashed var(--neon-blue);
-        }
-
-        /* Features Section */
-        .features {
-            padding: 5rem 8%;
-            text-align: center;
-        }
-
-        .section-title {
-            font-size: 2.2rem;
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-
-        .section-subtitle {
-            color: var(--text-sub);
-            margin-bottom: 3.5rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
-            background: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 2.5rem 1.8rem;
-            border-radius: 20px;
-            text-align: left;
-            transition: all 0.3s;
-        }
-
-        .feature-card:hover {
-            border-color: var(--neon-blue);
-            transform: translateY(-5px);
-        }
-
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 14px;
-            background: rgba(0, 240, 255, 0.1);
-            color: var(--neon-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Interactive Shelf Simulation */
-        .demo-section {
-            padding: 5rem 8%;
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        .cart-sim {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 2rem;
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 2rem;
-            border: 1px solid var(--border-glow);
-        }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-        }
-
-        .product-item {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 1rem;
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .product-item:hover {
-            border-color: var(--neon-blue);
-            background: rgba(0, 240, 255, 0.05);
-        }
-
-        .cart-box {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 1.5rem;
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        /* B2B Contact Form */
-        .contact-section {
-            padding: 5rem 8%;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-sub);
-            font-size: 0.9rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.9rem 1.2rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: #fff;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        .form-control:focus {
-            border-color: var(--neon-blue);
-        }
-
-        textarea.form-control {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .founder-info {
-            text-align: center;
-            margin-top: 4rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-sub);
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-sub);
-            font-size: 0.85rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        @media (max-width: 900px) {
-            .hero, .cart-sim {
-                grid-template-columns: 1fr;
-            }
-            .products-grid {
-                grid-template-columns: 1fr 1fr;
-            }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f2fe;
         }
     </style>
 </head>
-<body>
+<body class="text-slate-200 antialiased selection:bg-cyan-500 selection:text-slate-950">
 
-    <div class="bg-glow"></div>
+    <!-- Ambient Background Glows -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/3 -right-40 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-10 left-1/3 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-3xl"></div>
+    </div>
 
-    <!-- Header -->
-    <header>
-        <div class="logo">
-            <i class="fa-solid fa-microchip"></i> S-AI MARKET
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-brand flex items-center justify-center text-slate-950 font-black text-xl shadow-lg glow-cyan">
+                    S
+                </div>
+                <div>
+                    <span class="text-xl font-bold tracking-wider text-white">S-AI <span class="text-gradient-cyan">MARKET</span></span>
+                    <span class="block text-[10px] tracking-widest uppercase text-slate-400 font-medium">Smart Micro-Market</span>
+                </div>
+            </div>
+
+            <!-- Desktop Nav Menu -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                <a href="#about" class="hover:text-cyan-400 transition-colors">ინოვაცია</a>
+                <a href="#journey" class="hover:text-cyan-400 transition-colors">როგორ მუშაობს</a>
+                <a href="#demo" class="hover:text-cyan-400 transition-colors">Live სიმულატორი</a>
+                <a href="#layout" class="hover:text-cyan-400 transition-colors">10 კვ.მ. არქიტექტურა</a>
+                <a href="#franchise" class="hover:text-cyan-400 transition-colors">ფრენჩაიზინგი & B2B</a>
+            </nav>
+
+            <div class="flex items-center space-x-4">
+                <a href="#demo" class="hidden sm:flex items-center gap-2 bg-gradient-brand text-slate-950 font-bold px-4 py-2.5 rounded-xl hover:opacity-95 transition shadow-lg glow-cyan text-sm">
+                    <i class="fa-solid fa-play text-xs"></i>
+                    <span>გამოცადე Live</span>
+                </a>
+                <button id="mobileMenuBtn" class="md:hidden text-slate-300 hover:text-white p-2">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
         </div>
-        <nav>
-            <ul>
-                <li><a href="#about">ტექნოლოგია</a></li>
-                <li><a href="#how-it-works">როგორ მუშაობს</a></li>
-                <li><a href="#demo">სიმულაცია</a></li>
-                <li><a href="#contact">პარტნიორობა</a></li>
-            </ul>
-        </nav>
-        <a href="#contact" class="cta-btn">დაკავშირება</a>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobileMenu" class="hidden md:hidden border-t border-slate-800 bg-slate-900/95 px-4 pt-3 pb-6 space-y-3 text-sm">
+            <a href="#about" class="block py-2 text-slate-300 hover:text-cyan-400">ინოვაცია</a>
+            <a href="#journey" class="block py-2 text-slate-300 hover:text-cyan-400">როგორ მუშაობს</a>
+            <a href="#demo" class="block py-2 text-slate-300 hover:text-cyan-400">Live სიმულატორი</a>
+            <a href="#layout" class="block py-2 text-slate-300 hover:text-cyan-400">10 კვ.მ. არქიტექტურა</a>
+            <a href="#franchise" class="block py-2 text-slate-300 hover:text-cyan-400">ფრენჩაიზინგი & B2B</a>
+            <a href="#demo" class="w-full flex items-center justify-center gap-2 bg-gradient-brand text-slate-950 font-bold px-4 py-2.5 rounded-xl mt-2">
+                <i class="fa-solid fa-play text-xs"></i>
+                <span>გამოცადე Live</span>
+            </a>
+        </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="about">
-        <div>
-            <span class="hero-badge"><i class="fa-solid fa-bolt"></i> ინოვაცია საქართველოში</span>
-            <h1>Grab & Go <br><span style="color: var(--neon-blue);">AI მიკრო-მარკეტი</span></h1>
-            <p>პირველი სრულად ავტომატიზებული, უმოლარო სავაჭრო სივრცე. აიღეთ სასურველი პროდუქტი და დატოვეთ მაღაზია რიგში დგომის გარეშე.</p>
-            
-            <a href="#contact" class="cta-btn">გახდი პარტნიორი</a>
+    <main class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-28 py-12">
 
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <h3>15 წამი</h3>
-                    <p>სერვისის სიჩქარე</p>
-                </div>
-                <div class="stat-item">
-                    <h3>100%</h3>
-                    <p>ავტომატიზაცია</p>
-                </div>
-                <div class="stat-item">
-                    <h3>24/7</h3>
-                    <p>უწყვეტი რეჟიმი</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="simulator-card">
-            <div class="sim-header">
-                <div>
-                    <h4 style="font-size: 1.1rem;">S-AI Smart Gate</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-sub);">უსაფრთხო ავტორიზაცია</p>
-                </div>
-                <i class="fa-solid fa-qrcode" style="font-size: 1.8rem; color: var(--neon-blue);"></i>
-            </div>
-            
-            <div class="qr-demo">
-                <i class="fa-solid fa-mobile-screen-button" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 1rem;"></i>
-                <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">დაასკანირეთ QR კოდი შესასვლელად</p>
-                <small style="color: var(--text-sub);">ბარათის მომენტალური ვალიდაცია</small>
-            </div>
-        </div>
-    </section>
-
-    <!-- How It Works -->
-    <section class="features" id="how-it-works">
-        <h2 class="section-title">როგორ მუშაობს S-AI Market?</h2>
-        <p class="section-subtitle">სამი მარტივი ნაბიჯი სწრაფი და კომფორტული საყიდლებისთვის</p>
-
-        <div class="grid-3">
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fa-solid fa-qrcode"></i></div>
-                <h3>1. შესვლა & QR</h3>
-                <p style="color: var(--text-sub); margin-top: 0.5rem;">მომხმარებელი ასკანირებს აპლიკაციის ინდივიდუალურ QR კოდს შესასვლელ ტურნიკეტთან.</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fa-solid fa-eye"></i></div>
-                <h3>2. პროდუქტის აღება</h3>
-                <p style="color: var(--text-sub); margin-top: 0.5rem;">AI კამერები (Computer Vision) და თაროების წონის სენსორები მომენტალურად აფიქსირებენ ნივთს.</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fa-solid fa-cart-arrow-down"></i></div>
-                <h3>3. ავტო-გასვლა</h3>
-                <p style="color: var(--text-sub); margin-top: 0.5rem;">უბრალოდ ტოვებთ სივრცეს. თანხა ავტომატურად ჩამოიჭრება მიბმული ბარათიდან.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Interactive Simulator -->
-    <section class="demo-section" id="demo">
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 class="section-title">გამოცადეთ AI თაროს სიმულატორი</h2>
-            <p class="section-subtitle">დააჭირეთ პროდუქტს, რომ დაამატოთ ვირტუალურ კალათაში</p>
-        </div>
-
-        <div class="cart-sim">
-            <div>
-                <h4 style="margin-bottom: 1rem;">ჭკვიანი თარო (Smart Shelf)</h4>
-                <div class="products-grid">
-                    <div class="product-item" onclick="addToCart('წყალი 0.5ლ', 1.5)">
-                        <i class="fa-solid fa-bottle-water" style="font-size: 2rem; color: var(--neon-blue); margin-bottom: 0.5rem;"></i>
-                        <p>წყალი 0.5ლ</p>
+        <!-- Hero Showcase Section -->
+        <section id="hero" class="relative pt-4">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-300 text-xs font-semibold tracking-wide">
+                        <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
+                        პირველი უმოლარო "Grab & Go" მარკეტი საქართველოში
                     </div>
-                    <div class="product-item" onclick="addToCart('ყავა Cold Brew', 4.0)">
-                        <i class="fa-solid fa-mug-hot" style="font-size: 2rem; color: var(--neon-blue); margin-bottom: 0.5rem;"></i>
-                        <p>ყავა Cold Brew</p>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
+                        მომავლის რითეილი <br>
+                        <span class="text-gradient-cyan">15-წამიან</span> მომსახურებაში
+                    </h1>
+
+                    <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                        <strong class="text-white">S-AI Market</strong> არის AI Computer Vision-ითა და IoT წონის სენსორებით აღჭურვილი 10 კვ.მ. ავტომატიზებული სავაჭრო სივრცე. ნულოვანი რიგი, მოლარის გარეშე 24/7 მომსახურება და მომენტალური ავტო-გადახდა.
+                    </p>
+
+                    <!-- Founder & Key Highlights -->
+                    <div class="pt-2 flex flex-wrap justify-center lg:justify-start gap-4 text-xs sm:text-sm font-medium">
+                        <div class="flex items-center gap-2 bg-slate-900/80 border border-slate-800 px-4 py-2.5 rounded-xl">
+                            <i class="fa-solid fa-user-gear text-cyan-400"></i>
+                            <span>დამფუძნებელი: <strong class="text-white">სარქის სტეფანიან</strong></span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-900/80 border border-slate-800 px-4 py-2.5 rounded-xl">
+                            <i class="fa-solid fa-bolt text-amber-400"></i>
+                            <span>სერვისის დრო: <strong class="text-white">15 წამი</strong></span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-900/80 border border-slate-800 px-4 py-2.5 rounded-xl">
+                            <i class="fa-solid fa-clock text-emerald-400"></i>
+                            <span>სამუშაო გრაფიკი: <strong class="text-white">24/7 Unmanned</strong></span>
+                        </div>
                     </div>
-                    <div class="product-item" onclick="addToCart('ენერგეტიკული სნეკი', 2.5)">
-                        <i class="fa-solid fa-cookie" style="font-size: 2rem; color: var(--neon-blue); margin-bottom: 0.5rem;"></i>
-                        <p>სნეკი</p>
+
+                    <div class="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="#demo" class="w-full sm:w-auto bg-gradient-brand text-slate-950 font-bold px-8 py-4 rounded-xl hover:opacity-95 transition shadow-xl glow-cyan flex items-center justify-center gap-3">
+                            <i class="fa-solid fa-play text-sm"></i>
+                            <span>გამოცადე შესყიდვის სიმულაცია</span>
+                        </a>
+                        <a href="#journey" class="w-full sm:w-auto bg-slate-800/80 hover:bg-slate-800 text-white font-semibold px-6 py-4 rounded-xl border border-slate-700 text-center transition">
+                            როგორ მუშაობს?
+                        </a>
                     </div>
                 </div>
-            </div>
 
-            <div class="cart-box">
-                <div>
-                    <h4>AI კალათა</h4>
-                    <div id="cart-items" style="margin-top: 1rem; color: var(--text-sub); font-size: 0.9rem;">
-                        კალათა ცარიელია
+                <!-- Hero Interactive Visual Card -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="relative w-full max-w-md glass-card p-6 rounded-3xl border border-cyan-500/30 shadow-2xl">
+                        <div class="relative h-72 bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 p-5 flex flex-col justify-between">
+                            <div class="absolute inset-0 bg-[radial-gradient(#00f2fe_1px,transparent_1px)] [background-size:16px_16px] opacity-20 pointer-events-none"></div>
+                            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-scan-line"></div>
+
+                            <!-- Visual Card Header -->
+                            <div class="flex justify-between items-center z-10">
+                                <span class="bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 text-[11px] px-3 py-1 rounded-full flex items-center gap-2 font-mono">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> AI VISION: LIVE
+                                </span>
+                                <span class="text-xs text-slate-400 font-mono">SMART NODE #01</span>
+                            </div>
+
+                            <!-- Animated Visual Status Boxes -->
+                            <div class="space-y-3 z-10 my-auto">
+                                <div class="bg-slate-900/90 border border-slate-800 p-3 rounded-xl flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-bold text-white">4x AI Computer Vision</div>
+                                            <div class="text-[10px] text-slate-400">3D მოძრაობის & ნივთის ამოცნობა</div>
+                                        </div>
+                                    </div>
+                                    <span class="text-emerald-400 text-xs"><i class="fa-solid fa-circle-check"></i></span>
+                                </div>
+
+                                <div class="bg-slate-900/90 border border-slate-800 p-3 rounded-xl flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-sm">
+                                            <i class="fa-solid fa-weight-scale"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-bold text-white">24x IoT წონის სენსორი</div>
+                                            <div class="text-[10px] text-slate-400">თაროდან ნივთის აღების დაფიქსირება</div>
+                                        </div>
+                                    </div>
+                                    <span class="text-emerald-400 text-xs"><i class="fa-solid fa-circle-check"></i></span>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-cyan-950/80 to-purple-950/80 p-3 rounded-xl border border-cyan-500/30 flex justify-between items-center z-10">
+                                <span class="text-xs font-medium text-slate-300">მომსახურების სრული ციკლი:</span>
+                                <span class="text-sm font-black text-cyan-300 font-mono">15 წამი</span>
+                            </div>
+                        </div>
+
+                        <!-- Highlights Strip -->
+                        <div class="grid grid-cols-3 gap-3 mt-4 text-center">
+                            <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+                                <div class="text-[10px] text-slate-400 uppercase tracking-wider">ფართობი</div>
+                                <div class="text-sm font-bold text-white mt-0.5">10 კვ.მ.</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+                                <div class="text-[10px] text-slate-400 uppercase tracking-wider">რიგი</div>
+                                <div class="text-sm font-bold text-emerald-400 mt-0.5">0 წუთი</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+                                <div class="text-[10px] text-slate-400 uppercase tracking-wider">წვდომა</div>
+                                <div class="text-sm font-bold text-cyan-400 mt-0.5">24 / 7</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-top: 1rem;">
-                    <p>სულ: <span id="total-price" style="color: var(--neon-blue); font-weight: 700;">0.00 ₾</span></p>
-                    <button class="cta-btn" style="width: 100%; margin-top: 1rem;" onclick="checkout()">Grab & Go (გასვლა)</button>
+            </div>
+        </section>
+
+        <!-- Innovation & Problem Solution Section -->
+        <section id="about" class="space-y-10">
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <h2 class="text-xs font-bold tracking-widest text-cyan-400 uppercase">ინოვაცია რითეილში</h2>
+                <p class="text-3xl font-extrabold text-white">რატომ S-AI Market?</p>
+                <p class="text-slate-400 text-sm sm:text-base">თანამედროვე ურბანული სივრცეების 2 მთავარი გამოწვევა და ჩვენი ტექნოლოგიური პასუხი.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Challenge 1 -->
+                <div class="glass-card p-6 rounded-2xl border-l-4 border-l-rose-500 relative overflow-hidden">
+                    <div class="w-12 h-12 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center text-xl mb-4">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">დროის დანაკარგი</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                        პიკის საათებში ბიზნეს ცენტრებსა და ჰაბებში 1 ბოთლი წყლის ან სნეკის შესაძენად რიგში დგომა საშუალოდ <strong class="text-rose-300">7-12 წუთს</strong> მოითხოვს.
+                    </p>
+                    <span class="inline-block text-xs font-semibold text-rose-400 bg-rose-500/10 px-3 py-1 rounded-full">მომხმარებლის დისკომფორტი</span>
+                </div>
+
+                <!-- Challenge 2 -->
+                <div class="glass-card p-6 rounded-2xl border-l-4 border-l-amber-500 relative overflow-hidden">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-xl mb-4">
+                        <i class="fa-solid fa-shop-slash"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">შეზღუდული ლოკაციები</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                        ტრადიციული მაღაზიები ვერ ეტევიან კომპაქტურ შიდა სივრცეებში. შედეგად, თანამშრომლებს უწევთ შენობის დატოვება უბრალო წასახემსებლადაც კი.
+                    </p>
+                    <span class="inline-block text-xs font-semibold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full">ლოკაციის ლიმიტი</span>
+                </div>
+
+                <!-- AI Solution -->
+                <div class="glass-card p-6 rounded-2xl border-l-4 border-l-cyan-400 md:col-span-2 lg:col-span-1 bg-slate-900/80">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-xl mb-4">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">S-AI ინოვაციური გადაწყვეტა</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                        <strong class="text-cyan-300">Grab & Go</strong> მოდელი: QR შესვლა + AI კამერები + IoT წონის სენსორები = პროდუქტის აღება და გასვლა 15 წამში. ავტომატური ბარათიდან ჩამოჭრით.
+                    </p>
+                    <span class="inline-block text-xs font-semibold text-cyan-300 bg-cyan-500/20 px-3 py-1 rounded-full">100% ავტომატიზებული</span>
                 </div>
             </div>
+        </section>
+
+        <!-- Customer Journey Section -->
+        <section id="journey" class="space-y-10">
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <h2 class="text-xs font-bold tracking-widest text-cyan-400 uppercase">მომხმარებლის გამოცდილება</h2>
+                <p class="text-3xl font-extrabold text-white">3 მარტივი ნაბიჯი (15 წამი)</p>
+                <p class="text-slate-400 text-sm">როგორ მუშაობს "აიღე და წადი" სისტემა პრაქტიკაში</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                <!-- Step 1 -->
+                <div class="glass-card p-8 rounded-2xl border border-slate-800 text-center relative space-y-4">
+                    <div class="w-12 h-12 rounded-full bg-cyan-500/20 text-cyan-400 text-xl font-bold flex items-center justify-center mx-auto border border-cyan-500/40 shadow-lg">
+                        1
+                    </div>
+                    <div class="text-4xl text-cyan-400 py-2"><i class="fa-solid fa-qrcode"></i></div>
+                    <h3 class="text-lg font-bold text-white">1. შესვლა & QR სკანირება</h3>
+                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        მომხმარებელი ასკანირებს ვებ-აპლიკაციის ინდივიდუალურ QR კოდს. ხდება ბარათის მომენტალური ვალიდაცია და ტურნიკეტი იღება.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="glass-card p-8 rounded-2xl border border-slate-800 text-center relative space-y-4">
+                    <div class="w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 text-xl font-bold flex items-center justify-center mx-auto border border-purple-500/40 shadow-lg">
+                        2
+                    </div>
+                    <div class="text-4xl text-purple-400 py-2"><i class="fa-solid fa-basket-shopping"></i></div>
+                    <h3 class="text-lg font-bold text-white">2. პროდუქტის აღება</h3>
+                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        AI Computer Vision კამერები და თაროების IoT წონის სენსორები მომენტალურად აფიქსირებენ ნებისმიერ აღებულ ან უკან დაბრუნებულ ნივთს.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="glass-card p-8 rounded-2xl border border-slate-800 text-center relative space-y-4">
+                    <div class="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 text-xl font-bold flex items-center justify-center mx-auto border border-emerald-500/40 shadow-lg">
+                        3
+                    </div>
+                    <div class="text-4xl text-emerald-400 py-2"><i class="fa-solid fa-person-walking-arrow-right"></i></div>
+                    <h3 class="text-lg font-bold text-white">3. ავტო-გასვლა & გადახდა</h3>
+                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        მომხმარებელი უბრალოდ ტოვებს მარკეტს. სისტემა ავტომატურად ჭრის შესაბამის თანხას მიბმული საბანკო ბარათიდან. არანაირი რიგი.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Live Simulation Demo Section -->
+        <section id="demo" class="space-y-10 scroll-mt-24">
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <h2 class="text-xs font-bold tracking-widest text-cyan-400 uppercase">ინტერაქციული სიმულატორი</h2>
+                <p class="text-3xl font-extrabold text-white">გამოცადე "Grab & Go" რეალურ რეჟიმში</p>
+                <p class="text-slate-400 text-sm">აირჩიე პროდუქტები, დაასკანირე S-AI QR პასი და ნახე, როგორ მუშაობს ავტომატური ჩამოჭრა 15 წამში!</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <!-- Virtual Store Shelf -->
+                <div class="lg:col-span-7 glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-6">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span class="text-sm font-bold text-white">ვირტუალური თარო & სმარტ-მაცივარი</span>
+                        </div>
+                        <span class="text-xs text-slate-400 font-mono">IoT SENSORS READY</span>
+                    </div>
+
+                    <!-- Products Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <!-- Product 1 -->
+                        <div class="bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 p-4 rounded-2xl text-center space-y-3 transition flex flex-col justify-between">
+                            <div class="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-2xl mx-auto">
+                                <i class="fa-solid fa-wine-bottle"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm">Cold Brew ყავა</h4>
+                                <div class="text-xs font-mono text-cyan-300 mt-1">4.50 ₾</div>
+                            </div>
+                            <button onclick="toggleSimItem('Cold Brew ყავა', 4.50)" id="btnItem0" class="w-full bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 text-slate-200 text-xs font-bold py-2 rounded-xl transition">
+                                <i class="fa-solid fa-plus mr-1"></i> აღება თაროდან
+                            </button>
+                        </div>
+
+                        <!-- Product 2 -->
+                        <div class="bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 p-4 rounded-2xl text-center space-y-3 transition flex flex-col justify-between">
+                            <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-2xl mx-auto">
+                                <i class="fa-solid fa-cookie-bite"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm">პროტეინის სნეკი</h4>
+                                <div class="text-xs font-mono text-cyan-300 mt-1">3.20 ₾</div>
+                            </div>
+                            <button onclick="toggleSimItem('პროტეინის სნეკი', 3.20)" id="btnItem1" class="w-full bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 text-slate-200 text-xs font-bold py-2 rounded-xl transition">
+                                <i class="fa-solid fa-plus mr-1"></i> აღება თაროდან
+                            </button>
+                        </div>
+
+                        <!-- Product 3 -->
+                        <div class="bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 p-4 rounded-2xl text-center space-y-3 transition flex flex-col justify-between">
+                            <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-2xl mx-auto">
+                                <i class="fa-solid fa-bottle-water"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm">წყალი 0.5ლ</h4>
+                                <div class="text-xs font-mono text-cyan-300 mt-1">1.50 ₾</div>
+                            </div>
+                            <button onclick="toggleSimItem('წყალი 0.5ლ', 1.50)" id="btnItem2" class="w-full bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 text-slate-200 text-xs font-bold py-2 rounded-xl transition">
+                                <i class="fa-solid fa-plus mr-1"></i> აღება თაროდან
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation Basket & Interactive Pass Card -->
+                <div class="lg:col-span-5 glass-card p-6 sm:p-8 rounded-3xl border border-cyan-500/30 bg-slate-900/90 space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-basket-shopping text-cyan-400"></i>
+                            <span>AI Virtual Cart</span>
+                        </h3>
+                        <span id="cartCountBadge" class="text-xs bg-cyan-500/20 text-cyan-300 font-mono px-2.5 py-0.5 rounded-full">0 პროდუქტი</span>
+                    </div>
+
+                    <!-- Cart List -->
+                    <div id="simCartList" class="space-y-2 min-h-[100px] flex flex-col justify-center">
+                        <p class="text-xs text-slate-500 italic text-center">თაროებიდან ჯერ არაფერი აგიღიათ.</p>
+                    </div>
+
+                    <!-- Total Price Strip -->
+                    <div class="flex justify-between items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs text-slate-400">ჯამური ღირებულება:</span>
+                        <span id="simTotalAmount" class="text-xl font-bold font-mono text-emerald-400">0.00 ₾</span>
+                    </div>
+
+                    <!-- Checkout Trigger Button -->
+                    <button onclick="executeSimCheckout()" id="btnSimCheckout" class="w-full bg-gradient-brand text-slate-950 font-bold py-4 rounded-xl transition hover:opacity-95 text-sm glow-cyan flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-qrcode"></i>
+                        <span>S-AI Pass QR ავტორიზაცია & გასვლა</span>
+                    </button>
+
+                    <!-- Simulation Result Modal Overlay (Inline) -->
+                    <div id="simResultBox" class="hidden p-4 rounded-2xl bg-emerald-950/40 border border-emerald-500/50 text-center space-y-2">
+                        <div class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-lg border border-emerald-400">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <h4 class="font-bold text-white text-sm">გადახდა წარმატებით განხორციელდა!</h4>
+                        <p id="simResultText" class="text-xs text-slate-300">0.00 ₾ ავტომატურად ჩამოიჭრა. მომსახურების დრო: 14.8 წამი.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive 10 sq.m. Store Layout Section -->
+        <section id="layout" class="space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <h2 class="text-xs font-bold tracking-widest text-cyan-400 uppercase">ინფრასტრუქტურა</h2>
+                <p class="text-3xl font-extrabold text-white">10 კვ.მ. სივრცის ინტერაქციული გეგმარება</p>
+                <p class="text-slate-400 text-sm">დააკლიკეთ კომპონენტებს სივრცის ერგონომიულ მოდელზე დეტალური ინფორმაციის მისაღებად</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <!-- Blueprint Visualizer Container -->
+                <div class="lg:col-span-8 glass-card p-6 rounded-3xl border border-slate-800">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="text-xs font-mono text-slate-400 flex items-center gap-2">
+                            <i class="fa-solid fa-vector-square text-cyan-400"></i>
+                            <span>10 SQ.M ARCHITECTURAL LAYOUT</span>
+                        </div>
+                        <div class="flex gap-3 text-xs">
+                            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-cyan-500/30 border border-cyan-400 inline-block"></span> კონტროლი (3 კვ.მ)</span>
+                            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-purple-500/30 border border-purple-400 inline-block"></span> სავაჭრო ზონა (7 კვ.მ)</span>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Floor Blueprint Grid -->
+                    <div class="relative w-full aspect-[16/10] sm:aspect-[16/9] bg-slate-950 rounded-2xl border-2 border-slate-800 p-4 grid grid-cols-10 gap-2 overflow-hidden select-none">
+                        <div class="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:10%_20%] opacity-30 pointer-events-none"></div>
+
+                        <!-- Zone 1: Control Zone (3 sq.m.) -->
+                        <div class="col-span-3 border-2 border-dashed border-cyan-500/50 bg-cyan-950/20 rounded-xl p-3 flex flex-col justify-between relative group hover:bg-cyan-950/40 transition">
+                            <div class="absolute -top-3 left-3 bg-cyan-950 border border-cyan-500/50 text-cyan-300 text-[10px] font-bold px-2 py-0.5 rounded">
+                                კონტროლის ზონა (3 კვ.მ.)
+                            </div>
+
+                            <button onclick="inspectElement('turnstile')" class="w-full bg-slate-900 border border-cyan-400/50 hover:border-cyan-400 p-2 rounded-lg text-left transition text-xs flex items-center justify-between">
+                                <span class="font-medium text-slate-200"><i class="fa-solid fa-door-closed text-cyan-400 mr-1.5"></i> მაგნიტური კარი & ტურნიკეტი</span>
+                                <i class="fa-solid fa-circle-info text-slate-400"></i>
+                            </button>
+
+                            <div class="grid grid-cols-2 gap-2 my-2">
+                                <button onclick="inspectElement('camera_ctrl')" class="bg-slate-900/90 border border-cyan-500/30 hover:border-cyan-400 p-2 rounded-lg text-center transition">
+                                    <i class="fa-solid fa-video text-cyan-400 text-sm block mb-1"></i>
+                                    <span class="text-[10px] text-slate-300 block">AI კამერა #1</span>
+                                </button>
+                                <button onclick="inspectElement('edge_server')" class="bg-slate-900/90 border border-emerald-500/40 hover:border-emerald-400 p-2 rounded-lg text-center transition">
+                                    <i class="fa-solid fa-server text-emerald-400 text-sm block mb-1"></i>
+                                    <span class="text-[10px] text-slate-300 block">Edge Server</span>
+                                </button>
+                            </div>
+
+                            <button onclick="inspectElement('qr_panel')" class="w-full bg-slate-900 border border-cyan-400/40 hover:border-cyan-400 p-2 rounded-lg text-left transition text-xs flex items-center justify-between">
+                                <span class="font-medium text-slate-200"><i class="fa-solid fa-qrcode text-cyan-400 mr-1.5"></i> QR სკანერ პანელი</span>
+                                <i class="fa-solid fa-circle-info text-slate-400"></i>
+                            </button>
+                        </div>
+
+                        <!-- Zone 2: Shopping Zone (7 sq.m. U-Shaped Layout) -->
+                        <div class="col-span-7 border-2 border-dashed border-purple-500/50 bg-purple-950/20 rounded-xl p-3 grid grid-cols-3 gap-2 relative">
+                            <div class="absolute -top-3 left-3 bg-purple-950 border border-purple-500/50 text-purple-300 text-[10px] font-bold px-2 py-0.5 rounded">
+                                სავაჭრო ზონა (7 კვ.მ. U-ფორმის)
+                            </div>
+
+                            <button onclick="inspectElement('smart_shelf_top')" class="col-span-2 bg-slate-900 border border-purple-400/40 hover:border-purple-400 p-2.5 rounded-lg text-left transition text-xs flex items-center justify-between">
+                                <div>
+                                    <div class="font-bold text-white"><i class="fa-solid fa-cubes text-purple-400 mr-1.5"></i> ჭკვიანი თაროები (1-3)</div>
+                                    <div class="text-[10px] text-slate-400">12x IoT წონის სენსორები</div>
+                                </div>
+                                <i class="fa-solid fa-circle-info text-slate-400"></i>
+                            </button>
+
+                            <button onclick="inspectElement('smart_fridge')" class="col-span-1 bg-slate-900 border border-blue-400/40 hover:border-blue-400 p-2.5 rounded-lg text-left transition text-xs flex flex-col justify-between">
+                                <div class="font-bold text-white"><i class="fa-solid fa-snowflake text-blue-400 mr-1"></i> სმარტ-მაცივარი</div>
+                                <div class="text-[10px] text-slate-400">გაცივებული სასმელები</div>
+                            </button>
+
+                            <div class="col-span-2 bg-slate-950/80 rounded-lg p-2 flex items-center justify-center gap-3 border border-slate-800">
+                                <button onclick="inspectElement('ai_overhead')" class="px-3 py-1.5 bg-purple-900/40 border border-purple-500/50 rounded-lg text-xs text-purple-200 hover:bg-purple-900/60 transition flex items-center gap-2">
+                                    <i class="fa-solid fa-eye text-cyan-400"></i>
+                                    <span>3x AI Overhead Cams</span>
+                                </button>
+                            </div>
+
+                            <button onclick="inspectElement('smart_shelf_side')" class="col-span-1 bg-slate-900 border border-purple-400/40 hover:border-purple-400 p-2.5 rounded-lg text-left transition text-xs flex flex-col justify-between">
+                                <div class="font-bold text-white"><i class="fa-solid fa-cubes text-purple-400 mr-1"></i> თაროები (4-6)</div>
+                                <div class="text-[10px] text-slate-400">12x IoT წონის სენსორები</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Floor Layout Inspector Details Panel -->
+                <div class="lg:col-span-4 glass-card p-6 rounded-3xl border border-slate-800 space-y-4" id="inspectorCard">
+                    <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
+                        <div id="inspectIcon" class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </div>
+                        <div>
+                            <h3 id="inspectTitle" class="font-bold text-white text-base">აირჩიეთ ელემენტი</h3>
+                            <span id="inspectSub" class="text-xs text-slate-400">დააკლიკეთ გეგმარებაზე</span>
+                        </div>
+                    </div>
+
+                    <p id="inspectDesc" class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                        დააჭირეთ გეგმარების ნებისმიერ ზონას, AI კამერებს, სმარტ თაროებს ან Edge სერვერს მისი ტექნიკური მახასიათებლების სანახავად.
+                    </p>
+
+                    <div id="inspectSpecs" class="space-y-2 pt-2 text-xs">
+                        <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 text-slate-400 italic">
+                            ინტერაქციული რეჟიმი მზადაა.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Security & Risk Prevention Section -->
+        <section id="security" class="space-y-10">
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <h2 class="text-xs font-bold tracking-widest text-cyan-400 uppercase">უსაფრთხოება</h2>
+                <p class="text-3xl font-extrabold text-white">3-დონიანი უსაფრთხოების & ავტონომიის სისტემა</p>
+                <p class="text-slate-400 text-sm">არასანქცირებული ქმედებების პრევენცია და უწყვეტი ფუნქციონირება</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Security 1 -->
+                <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3 relative">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-lg font-bold">
+                        1
+                    </div>
+                    <h3 class="text-lg font-bold text-white">წინასწარი ვალიდაცია</h3>
+                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        მარკეტში შესვლა შეუძლებელია საბანკო ბარათის წინასწარი ავტორიზაციისა და ექაუნთზე მინიმუმ 1 ლარის ბალანსის გადამოწმების გარეშე.
+                    </p>
+                </div>
+
+                <!-- Security 2 -->
+                <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3 relative">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-lg font-bold">
+                        2
+                    </div>
+                    <h3 class="text-lg font-bold text-white">AI ვიზუალური კონტროლი</h3>
+                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        Computer Vision ახდენს სახის იდენტიფიცირებას. არასანქცირებული ქმედებისას სისტემა მომენტალურად ბლოკავს მომხმარებელს.
+                    </p>
+                </div>
+
+                <!-- Security 3 -->
+                <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3 relative">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-lg font-bold">
+                        3
+                    </div>
+                    <h3 class="text-lg font-bold text-white">UPS ავტონომიური კვება</h3>
+                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        სისტემა აღჭურვილია უწყვეტი კვების ბლოკით (UPS), რაც უზრუნველყოფს 4-საათიან ავტონომიურ მუშაობას ელექტროენერგიის გათიშვის შემთხვევაშიც.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Franchise & B2B Expansion Form Section -->
+        <section id="franchise" class="space-y-10 scroll-mt-24">
+            <div class="glass-card p-8 sm:p-12 rounded-3xl border border-cyan-500/30 bg-slate-900/90 relative overflow-hidden">
+                <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                    <!-- Text Info -->
+                    <div class="lg:col-span-6 space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-xs font-semibold">
+                            <i class="fa-solid fa-chart-line"></i> B2B & ფრენჩაიზინგი
+                        </div>
+
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
+                            განათავსეთ S-AI Market <br>
+                            <span class="text-gradient-cyan">თქვენს შენობაში</span>
+                        </h2>
+
+                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                            გსურთ გქონდეთ საქართველოში პირველი ინოვაციური Smart მიკრო-მარკეტი თქვენს ბიზნეს ცენტრში, უნივერსიტეტში ან საცხოვრებელ კომპლექსში? 
+                        </p>
+
+                        <div class="space-y-3 text-xs sm:text-sm text-slate-300">
+                            <div class="flex items-center gap-3">
+                                <div class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xs">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <span>100% ავტომატიზებული — პერსონალის გარეშე</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xs">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <span>საჭიროებს სულ რაღაც 10 კვ.მ. კომპაქტურ ფართობს</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xs">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <span>24/7 კომფორტი თქვენი თანამშრომლებისა და მაცხოვრებლებისთვის</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div class="lg:col-span-6">
+                        <form onsubmit="handlePartnerSubmit(event)" class="space-y-4 bg-slate-950/80 p-6 sm:p-8 rounded-2xl border border-slate-800">
+                            <h3 class="text-lg font-bold text-white mb-2">პარტნიორობის განაცხადი</h3>
+
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">სახელი, გვარი</label>
+                                <input type="text" required placeholder="მაგ: გიორგი ბერიძე" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-400 transition">
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">ტელეფონის ნომერი</label>
+                                    <input type="tel" required placeholder="599 00 00 00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-400 transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">ელ. ფოსტა</label>
+                                    <input type="email" required placeholder="name@company.ge" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-400 transition">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">ობიექტის/შენობის ტიპი</label>
+                                <select class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-300 focus:outline-none focus:border-cyan-400 transition">
+                                    <option>ბიზნეს ცენტრი / ოფისი</option>
+                                    <option>საცხოვრებელი კომპლექსი</option>
+                                    <option>უნივერსიტეტი / ჰაბი</option>
+                                    <option>სხვა (ფრენჩაიზინგით დაინტერესება)</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="w-full bg-gradient-brand text-slate-950 font-bold py-3.5 rounded-xl transition hover:opacity-95 text-sm glow-cyan mt-2">
+                                განაცხადის გაგზავნა
+                            </button>
+
+                            <p id="formMsg" class="hidden text-xs text-emerald-400 font-medium text-center pt-2">
+                                <i class="fa-solid fa-circle-check"></i> გმადლობთ! თქვენი განაცხადი მიღებულია.
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-950 mt-20 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-brand flex items-center justify-center text-slate-950 font-black text-base">
+                    S
+                </div>
+                <span class="text-lg font-bold text-white">S-AI <span class="text-gradient-cyan">MARKET</span></span>
+            </div>
+
+            <p class="text-xs text-slate-500 text-center md:text-left">
+                © 2026 S-AI Market. პროექტის ავტორი და დამფუძნებელი: <strong class="text-slate-300">სარქის სტეფანიან</strong>.
+            </p>
+
+            <div class="flex items-center space-x-4 text-xs text-slate-400">
+                <span><i class="fa-solid fa-location-dot text-cyan-400 mr-1"></i>თბილისი, საქართველო</span>
+            </div>
         </div>
-    </section>
-
-    <!-- B2B Contact Form (Configured with your Web3Forms Access Key) -->
-    <section class="contact-section" id="contact">
-        <div style="text-align: center; margin-bottom: 2.5rem;">
-            <h2 class="section-title">პარტნიორობა & ფრენჩაიზი</h2>
-            <p style="color: var(--text-sub);">გსურთ განათავსოთ S-AI Market თქვენს ბიზნეს ცენტრში, ჰაბში ან გახდეთ ფრენჩაიზერი? გამოგვიგზავნეთ შეტყობინება.</p>
-        </div>
-
-        <form action="https://api.web3forms.com/submit" method="POST" style="background: var(--bg-card); padding: 2.5rem; border-radius: 20px; border: 1px solid var(--border-glow);">
-            <!-- Your Web3Forms Access Key -->
-            <input type="hidden" name="access_key" value="b4fcd015-d5a8-4a2a-8e1a-39088c68357e">
-            <input type="hidden" name="subject" value="ახალი B2B განაცხადი - S-AI Market">
-            <input type="hidden" name="from_name" value="S-AI Market Landing Page">
-
-            <div class="form-group">
-                <label>თქვენი სახელი / კომპანია</label>
-                <input type="text" name="name" class="form-control" placeholder="მაგ: გიორგი ბერიძე" required>
-            </div>
-
-            <div class="form-group">
-                <label>საკონტაქტო ელფოსტა</label>
-                <input type="email" name="email" class="form-control" placeholder="example@domain.com" required>
-            </div>
-
-            <div class="form-group">
-                <label>ტელეფონის ნომერი</label>
-                <input type="tel" name="phone" class="form-control" placeholder="+995 5XX XX XX XX">
-            </div>
-
-            <div class="form-group">
-                <label>შეტყობინება / შემოთავაზება</label>
-                <textarea name="message" class="form-control" placeholder="აღწერეთ თქვენი ინტერესი ან ლოკაცია..." required></textarea>
-            </div>
-
-            <button type="submit" class="cta-btn" style="width: 100%; font-size: 1rem;">შეტყობინების გაგზავნა</button>
-        </form>
-
-        <div class="founder-info">
-            <p><strong>პროექტის ავტორი და დამფუძნებელი:</strong> სარქის სტეფანიან</p>
-            <p style="font-size: 0.85rem; margin-top: 0.3rem;">S-AI Market © 2026. ყველა უფლება დაცულია.</p>
-        </div>
-    </section>
-
-    <footer>
-        <p>S-AI Market — Smart Micro-Market Technology Solution</p>
     </footer>
 
     <!-- JavaScript Logic -->
     <script>
-        let cart = [];
-        let total = 0;
+        // Mobile Navigation Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
 
-        function addToCart(name, price) {
-            cart.push({name, price});
-            total += price;
-            updateCartUI();
+        // Interactive Live Shopping Simulation Cart Logic
+        let simCart = [];
+
+        function toggleSimItem(name, price) {
+            // Hide result box if previously shown
+            document.getElementById('simResultBox').classList.add('hidden');
+
+            const existingIndex = simCart.findIndex(item => item.name === name);
+            if (existingIndex > -1) {
+                simCart.splice(existingIndex, 1);
+            } else {
+                simCart.push({ name, price });
+            }
+            updateSimCartUI();
         }
 
-        function updateCartUI() {
-            const itemsContainer = document.getElementById('cart-items');
-            const totalContainer = document.getElementById('total-price');
+        function updateSimCartUI() {
+            const cartList = document.getElementById('simCartList');
+            const totalElem = document.getElementById('simTotalAmount');
+            const countBadge = document.getElementById('cartCountBadge');
 
-            if (cart.length === 0) {
-                itemsContainer.innerHTML = 'კალათა ცარიელია';
-                totalContainer.innerText = '0.00 ₾';
+            countBadge.innerText = simCart.length + ' პროდუქტი';
+
+            if (simCart.length === 0) {
+                cartList.innerHTML = `<p class="text-xs text-slate-500 italic text-center">თაროებიდან ჯერ არაფერი აგიღიათ.</p>`;
+                totalElem.innerText = '0.00 ₾';
                 return;
             }
 
-            itemsContainer.innerHTML = cart.map(item => `
-                <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;">
-                    <span>${item.name}</span>
-                    <span style="color:var(--neon-blue);">${item.price.toFixed(2)} ₾</span>
-                </div>
-            `).join('');
+            let total = 0;
+            let listHtml = '';
+            simCart.forEach(item => {
+                total += item.price;
+                listHtml += `
+                    <div class="flex justify-between items-center bg-slate-950/80 p-2.5 rounded-xl border border-slate-800 text-xs">
+                        <span class="text-slate-200 font-medium"><i class="fa-solid fa-check text-cyan-400 mr-2"></i>${item.name}</span>
+                        <span class="font-mono text-cyan-300">${item.price.toFixed(2)} ₾</span>
+                    </div>
+                `;
+            });
 
-            totalContainer.innerText = total.toFixed(2) + ' ₾';
+            cartList.innerHTML = listHtml;
+            totalElem.innerText = total.toFixed(2) + ' ₾';
         }
 
-        function checkout() {
-            if (cart.length === 0) {
-                alert('გთხოვთ, ჯერ აირჩიოთ პროდუქტი თაროდან!');
+        function executeSimCheckout() {
+            if (simCart.length === 0) {
+                alert('გთხოვთ ჯერ აირჩიოთ მინიმუმ 1 პროდუქტი თაროებიდან.');
                 return;
             }
-            alert('ავტომატური გადახდა წარმატებულია! გმადლობთ, რომ სარგებლობთ S-AI Market-ით.');
-            cart = [];
-            total = 0;
-            updateCartUI();
+
+            let total = simCart.reduce((sum, item) => sum + item.price, 0);
+            
+            // Show result
+            const resultBox = document.getElementById('simResultBox');
+            const resultText = document.getElementById('simResultText');
+            
+            resultText.innerText = `${total.toFixed(2)} ₾ ავტომატურად ჩამოიჭრა მიბმული ბარათიდან. მომსახურების დრო: 14.8 წამი.`;
+            resultBox.classList.remove('hidden');
+
+            // Trigger Confetti effect
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 50,
+                    spread: 60,
+                    origin: { y: 0.7 }
+                });
+            }
+
+            // Clear cart
+            simCart = [];
+            updateSimCartUI();
+        }
+
+        // Layout Inspector Component Data
+        const inspectorData = {
+            'turnstile': {
+                title: 'მაგნიტური კარი & ტურნიკეტი',
+                sub: 'კონტროლის ზონა (3 კვ.მ.)',
+                icon: 'fa-door-closed',
+                desc: 'ავტომატიზებული მაგნიტური საკეტი და ტურნიკეტი. იღება მხოლოდ ვალიდური S-AI QR კოდის სკანირებისას.',
+                specs: [
+                    'სპეციფიკაცია: 24V Magnetic Lock',
+                    'რეაგირება: < 0.5 წამი',
+                    'უსაფრთხოება: ავტომატური განბლოკვა ხანძრის/ავარიისას'
+                ]
+            },
+            'camera_ctrl': {
+                title: 'კონტროლის AI კამერა #1',
+                sub: 'შესვლა / გამოსვლის მონიტორინგი',
+                icon: 'fa-video',
+                desc: 'მაღალი გარჩევადობის Computer Vision კამერა, რომელიც ახდენს შემსვლელი პირის იდენტიფიცირებას.',
+                specs: [
+                    'გარჩევადობა: 4K UHD 60FPS',
+                    'ფუნქცია: Face Recognition & Entrance Analytics',
+                    'ღამის ხედვა: IR Night Vision'
+                ]
+            },
+            'edge_server': {
+                title: 'Edge Computing სერვერი',
+                sub: 'ლოკალური მონაცემთა დამუშავება',
+                icon: 'fa-server',
+                desc: 'ლოკალური მინი-სერვერი. უზრუნველყოფს კამერების და სენსორების უწყვეტ მუშაობას ინტერნეტის დროებითი გათიშვის დროსაც.',
+                specs: [
+                    'პროცესორი: Neural Processing Unit (NPU)',
+                    'ავტონომიურობა: სრული offline ქეშირება',
+                    'უსაფრთხოება: Encrypted Local Storage'
+                ]
+            },
+            'qr_panel': {
+                title: 'QR ავტორიზაციის პანელი',
+                sub: 'შესასვლელი ტერმინალი',
+                icon: 'fa-qrcode',
+                desc: 'გარე სკანერი მომხმარებლის ტელეფონიდან QR კოდის დასასკანერებლად.',
+                specs: [
+                    'ეკრანი: 7" IPS Display',
+                    'სკანერი: High-speed Optical Scanner',
+                    'ინტეგრაცია: Banking Payment Gateways'
+                ]
+            },
+            'smart_shelf_top': {
+                title: 'ჭკვიანი თაროები (1-3)',
+                sub: 'სავაჭრო ზონა (7 კვ.მ.)',
+                icon: 'fa-cubes',
+                desc: 'U-ფორმის თაროები აღჭურვილი მაღალი სიზუსტის IoT წონის სენსორებით. აფიქსირებს ნივთის აღებას ±1 გრამის სიზუსტით.',
+                specs: [
+                    'სენსორები: 12x Weight Strain Gauges',
+                    'ტევადობა: 150+ FMCG პროდუქტი',
+                    'განათება: Smart LED Feedback'
+                ]
+            },
+            'smart_shelf_side': {
+                title: 'ჭკვიანი თაროები (4-6)',
+                sub: 'სავაჭრო ზონა (7 კვ.მ.)',
+                icon: 'fa-cubes',
+                desc: 'გვერდითი კედლის თაროები მშრალი სნეკების, ტკბილეულისა და აქსესუარებისთვის.',
+                specs: [
+                    'სენსორები: 12x Weight Sensors',
+                    'ავტო-ინვენტარიზაცია: Real-time stock sync'
+                ]
+            },
+            'smart_fridge': {
+                title: 'სმარტ-მაცივარი',
+                sub: 'გაცივებული სასმელები',
+                icon: 'fa-snowflake',
+                desc: 'ენერგოეფექტური ჭკვიანი მაცივარი გამჭვირვალე მინის კარით და წონის კონტროლით.',
+                specs: [
+                    'ტემპერატურა: 2°C - 6°C',
+                    'ტევადობა: 80+ ბოთლი / ქილა',
+                    'კონტროლი: AI Door Latch Sensor'
+                ]
+            },
+            'ai_overhead': {
+                title: '3x ჭერის AI კამერები',
+                sub: 'Computer Vision სავაჭრო სივრცეში',
+                icon: 'fa-eye',
+                desc: '3 კამერისგან შემდგარი სისტემა, რომელიც 3D სივრცეში აკონტროლებს მომხმარებლის ხელის მოძრაობას თაროსთან.',
+                specs: [
+                    'დაფარვა: 100% Blind-Spot Free',
+                    'ალგორითმი: Action Recognition Model',
+                    'სიზუსტე: 99.4% Detection Accuracy'
+                ]
+            }
+        };
+
+        function inspectElement(key) {
+            const data = inspectorData[key];
+            if (!data) return;
+
+            document.getElementById('inspectTitle').innerText = data.title;
+            document.getElementById('inspectSub').innerText = data.sub;
+            document.getElementById('inspectDesc').innerText = data.desc;
+            document.getElementById('inspectIcon').innerHTML = `<i class="fa-solid ${data.icon}"></i>`;
+
+            let specsHtml = '';
+            data.specs.forEach(spec => {
+                specsHtml += `
+                    <div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800 flex items-center gap-2 text-slate-200">
+                        <i class="fa-solid fa-check text-cyan-400 text-xs"></i>
+                        <span>${spec}</span>
+                    </div>
+                `;
+            });
+            document.getElementById('inspectSpecs').innerHTML = specsHtml;
+        }
+
+        // B2B Partner Form Handler
+        function handlePartnerSubmit(e) {
+            e.preventDefault();
+            const msg = document.getElementById('formMsg');
+            msg.classList.remove('hidden');
+            e.target.reset();
         }
     </script>
 </body>
 </html>
+```
